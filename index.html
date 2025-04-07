@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>My Image Gallery</title>
   <style>
     html, body {
@@ -14,6 +14,7 @@
       color: #2c2c2c;
       display: flex;
       flex-direction: column;
+      touch-action: manipulation;
     }
 
     .header {
@@ -113,7 +114,7 @@
   <div class="gallery" id="gallery"></div>
 
   <script>
-    // Prevent double-tap to zoom on mobile devices
+    // Prevent double-tap zoom on mobile devices
     let lastTouchEnd = 0;
     document.addEventListener('touchend', function (event) {
       const now = new Date().getTime();
@@ -122,6 +123,11 @@
       }
       lastTouchEnd = now;
     }, false);
+
+    // Prevent double-click zoom on desktop browsers
+    document.addEventListener('dblclick', function (e) {
+      e.preventDefault();
+    }, { passive: false });
 
     const imageSources = [
       "https://raw.githubusercontent.com/wilsonbanh/domain/main/images/IMG_1914.png",

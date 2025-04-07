@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>My Image Gallery</title>
   <style>
-    /* Basic page setup */
     html, body {
       height: 100%;
       margin: 0;
@@ -13,68 +12,81 @@
       font-family: 'Georgia', serif;
       background-color: #f9f7f3;
       color: #2c2c2c;
+      display: flex;
+      flex-direction: column;
     }
 
-    /* Header section with centered title and contact info */
     .header {
+      height: 10vh;
       text-align: center;
-      padding: 20px 0;
+      padding: 10px 0;
       background-color: #f9f7f3;
-      position: relative;
       z-index: 2;
     }
 
     h1 {
       color: #4b2e83;
-      font-size: 2em;
-      margin: 5px 0;
+      font-size: 1.5em;
+      margin: 2px 0;
       letter-spacing: 1px;
     }
 
     .contact, .address {
-      font-size: 1em;
-      margin: 4px 0;
+      font-size: 0.9em;
+      margin: 2px 0;
     }
 
-    /* Gallery layout using flexbox with 3D perspective */
+    .main-display {
+      height: 80vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #ffffff;
+    }
+
+    .main-display img {
+      max-height: 90%;
+      max-width: 90%;
+      object-fit: contain;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    }
+
     .gallery {
+      height: 10vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: calc(100vh - 150px); /* Remaining height after header */
       gap: 10px;
       overflow: hidden;
-      perspective: 1200px; /* Enables 3D transforms */
+      perspective: 1200px;
     }
 
-    /* Side image cards */
     .gallery-item {
-      flex: 0 0 24%; /* Width of non-center images */
+      height: 100%;
+      aspect-ratio: 3 / 2;
       transition: transform 0.6s ease, box-shadow 0.6s ease;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       transform-style: preserve-3d;
-      transform: rotateY(-30deg) scale(0.84); /* 🔧 Adjust left image rotation and size */
+      transform: rotateY(-30deg) scale(0.84);
       opacity: 0.6;
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
     }
 
-    /* Styling for all images */
     .gallery-item img {
       max-width: 100%;
       max-height: 100%;
-      height: auto;
-      width: auto;
-      border-radius: 16px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
       object-fit: contain;
     }
 
-    /* Center image (active) styling */
     .gallery-item.active {
-      transform: rotateY(0deg) scale(1); /* No rotation, full size */
-      flex: 0 0 30%; /* Width of center image */
+      transform: rotateY(0deg) scale(1);
       opacity: 1;
       z-index: 2;
     }
@@ -84,25 +96,23 @@
       box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
     }
 
-    /* Right side image (mirrored rotation of left) */
     .gallery-item:nth-child(3):not(.active) {
-      transform: rotateY(30deg) scale(0.84); /* 🔧 Adjust right image rotation and size */
+      transform: rotateY(30deg) scale(0.84);
     }
   </style>
 </head>
 <body>
-  <!-- Header content -->
   <div class="header">
     <h1>Under Construction</h1>
     <div class="contact">Phone: (425) 429-2929</div>
     <div class="address">Heritage Hills, Sammamish, Washington, USA</div>
   </div>
 
-  <!-- Main gallery container -->
+  <div class="main-display" id="mainDisplay"></div>
+
   <div class="gallery" id="gallery"></div>
 
   <script>
-    // Image URLs to display
     const imageSources = [
       "https://github.com/wilsonbanh/domain/blob/main/IMG_1878.PNG?raw=true",
       "https://github.com/wilsonbanh/domain/blob/main/IMG_1917.PNG?raw=true",
@@ -111,29 +121,33 @@
       "https://github.com/wilsonbanh/domain/blob/main/IMG_1986.PNG?raw=true"
     ];
 
-    let currentIndex = 0; // Tracks the currently centered image
+    let currentIndex = 0;
     const gallery = document.getElementById("gallery");
+    const mainDisplay = document.getElementById("mainDisplay");
 
-    // Renders the visible images in the gallery
+    function renderMainImage() {
+      mainDisplay.innerHTML = "";
+      const img = new Image();
+      img.src = imageSources[currentIndex];
+      img.alt = "Selected Image";
+      mainDisplay.appendChild(img);
+    }
+
     function renderGallery() {
-      gallery.innerHTML = ""; // Clear existing gallery items
+      gallery.innerHTML = "";
       const total = imageSources.length;
-
-      // Helper function to wrap around index when reaching bounds
       const getIndex = (i) => (i + total) % total;
 
-      // Select 3 images to show: left, center, right
       const visible = [
         imageSources[getIndex(currentIndex - 1)],
         imageSources[getIndex(currentIndex)],
         imageSources[getIndex(currentIndex + 1)],
       ];
 
-      // Create and append image elements
       visible.forEach((src, i) => {
         const div = document.createElement("div");
         div.className = "gallery-item";
-        if (i === 1) div.classList.add("active"); // Highlight center image
+        if (i === 1) div.classList.add("active");
 
         const img = new Image();
         img.src = src;
@@ -141,9 +155,9 @@
 
         div.appendChild(img);
 
-        // When clicked, make the clicked image the new center
         div.addEventListener("click", () => {
           currentIndex = getIndex(currentIndex + i - 1);
+          renderMainImage();
           renderGallery();
         });
 
@@ -151,7 +165,7 @@
       });
     }
 
-    // Initial render
+    renderMainImage();
     renderGallery();
   </script>
 </body>

@@ -6,36 +6,150 @@
   <title>My Image Gallery</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
+      font-family: 'Georgia', serif;
+      background-color: #f9f7f3;
       margin: 0;
-      padding: 20px;
+      padding: 40px 20px;
+      color: #2c2c2c;
     }
+
     h1 {
       text-align: center;
-      color: #333;
+      color: #4b2e83;
+      font-size: 3em;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
     }
+
+    .contact {
+      text-align: center;
+      font-size: 1.3em;
+      color: #6a5acd;
+      margin-top: 0;
+      font-weight: 500;
+      font-style: italic;
+    }
+
+    .address {
+      text-align: center;
+      font-size: 1.1em;
+      color: #4b2e83;
+      margin-top: 5px;
+      font-weight: 400;
+    }
+
     .gallery {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 15px;
-      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      margin-top: 50px;
+      gap: 20px;
+      flex-wrap: wrap;
     }
-    .gallery img {
+
+    .gallery-item {
+      flex: 0 0 30%;
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+      cursor: pointer;
+    }
+
+    .gallery-item img {
       width: 100%;
       height: auto;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      aspect-ratio: attr(data-aspect-ratio);
+      border-radius: 16px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+    }
+
+    .gallery-item.active {
+      flex: 0 0 40%;
+    }
+
+    .gallery-item.active img {
+      transform: scale(1.05);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 900px) {
+      .gallery {
+        gap: 12px;
+      }
+      .gallery-item {
+        flex: 0 0 45%;
+      }
+      .gallery-item.active {
+        flex: 0 0 100%;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .gallery-item {
+        flex: 0 0 100%;
+      }
     }
   </style>
 </head>
 <body>
   <h1>Under Construction</h1>
-  <div class="gallery">
-    <img src="https://github.com/wilsonbanh/domain/blob/main/IMG_1878.PNG?raw=true" alt="Image 1">
-    <img src="https://github.com/wilsonbanh/domain/blob/main/IMG_1917.PNG?raw=true" alt="Image 2">
-    <img src="https://github.com/wilsonbanh/domain/blob/main/IMG_1942.PNG?raw=true" alt="Image 3">
-    <!-- Add more <img> tags with your image URLs -->
+
+  <div class="contact">
+    Phone: (425) 429-2929
   </div>
+
+  <div class="address">
+    Heritage Hills, Sammamish, Washington, USA
+  </div>
+
+  <div class="gallery" id="gallery"></div>
+
+  <script>
+    const imageSources = [
+      "https://github.com/wilsonbanh/domain/blob/main/IMG_1878.PNG?raw=true",
+      "https://github.com/wilsonbanh/domain/blob/main/IMG_1917.PNG?raw=true",
+      "https://github.com/wilsonbanh/domain/blob/main/IMG_1942.PNG?raw=true",
+      "https://github.com/wilsonbanh/domain/blob/main/IMG_1946.PNG?raw=true",
+      "https://github.com/wilsonbanh/domain/blob/main/IMG_1986.PNG?raw=true"
+    ];
+
+    let currentIndex = 0;
+    const gallery = document.getElementById("gallery");
+
+    function renderGallery() {
+      gallery.innerHTML = "";
+      const total = imageSources.length;
+      const getIndex = (i) => (i + total) % total;
+
+      const visible = [
+        imageSources[getIndex(currentIndex - 1)],
+        imageSources[getIndex(currentIndex)],
+        imageSources[getIndex(currentIndex + 1)],
+      ];
+
+      visible.forEach((src, i) => {
+        const div = document.createElement("div");
+        div.className = "gallery-item";
+        if (i === 1) div.classList.add("active");
+
+        const img = new Image();
+        img.src = src;
+        img.alt = `Image`;
+        img.onload = () => {
+          const aspectRatio = img.naturalWidth / img.naturalHeight;
+          img.setAttribute('style', `aspect-ratio: ${aspectRatio}`);
+        };
+
+        div.appendChild(img);
+        div.addEventListener("click", () => {
+          currentIndex = getIndex(currentIndex + i - 1);
+          renderGallery();
+        });
+        gallery.appendChild(div);
+      });
+    }
+
+    renderGallery();
+  </script>
 </body>
 </html>

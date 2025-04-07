@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>My Image Gallery</title>
   <style>
+    /* Basic page setup */
     html, body {
       height: 100%;
       margin: 0;
@@ -14,6 +15,7 @@
       color: #2c2c2c;
     }
 
+    /* Header section with centered title and contact info */
     .header {
       text-align: center;
       padding: 20px 0;
@@ -34,28 +36,31 @@
       margin: 4px 0;
     }
 
+    /* Gallery layout using flexbox with 3D perspective */
     .gallery {
       display: flex;
       justify-content: center;
       align-items: center;
-      height: calc(100vh - 150px);
+      height: calc(100vh - 150px); /* Remaining height after header */
       gap: 10px;
       overflow: hidden;
-      perspective: 1200px;
+      perspective: 1200px; /* Enables 3D transforms */
     }
 
+    /* Side image cards */
     .gallery-item {
-      flex: 0 0 24%;
+      flex: 0 0 24%; /* Width of non-center images */
       transition: transform 0.6s ease, box-shadow 0.6s ease;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       transform-style: preserve-3d;
-      transform: rotateY(-30deg) scale(0.56);
+      transform: rotateY(-30deg) scale(0.84); /* 🔧 Adjust left image rotation and size */
       opacity: 0.6;
     }
 
+    /* Styling for all images */
     .gallery-item img {
       max-width: 100%;
       max-height: 100%;
@@ -66,9 +71,10 @@
       object-fit: contain;
     }
 
+    /* Center image (active) styling */
     .gallery-item.active {
-      transform: rotateY(0deg) scale(1);
-      flex: 0 0 30%;
+      transform: rotateY(0deg) scale(1); /* No rotation, full size */
+      flex: 0 0 30%; /* Width of center image */
       opacity: 1;
       z-index: 2;
     }
@@ -78,21 +84,25 @@
       box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
     }
 
+    /* Right side image (mirrored rotation of left) */
     .gallery-item:nth-child(3):not(.active) {
-      transform: rotateY(30deg) scale(0.56);
+      transform: rotateY(30deg) scale(0.84); /* 🔧 Adjust right image rotation and size */
     }
   </style>
 </head>
 <body>
+  <!-- Header content -->
   <div class="header">
     <h1>Under Construction</h1>
     <div class="contact">Phone: (425) 429-2929</div>
     <div class="address">Heritage Hills, Sammamish, Washington, USA</div>
   </div>
 
+  <!-- Main gallery container -->
   <div class="gallery" id="gallery"></div>
 
   <script>
+    // Image URLs to display
     const imageSources = [
       "https://github.com/wilsonbanh/domain/blob/main/IMG_1878.PNG?raw=true",
       "https://github.com/wilsonbanh/domain/blob/main/IMG_1917.PNG?raw=true",
@@ -101,38 +111,47 @@
       "https://github.com/wilsonbanh/domain/blob/main/IMG_1986.PNG?raw=true"
     ];
 
-    let currentIndex = 0;
+    let currentIndex = 0; // Tracks the currently centered image
     const gallery = document.getElementById("gallery");
 
+    // Renders the visible images in the gallery
     function renderGallery() {
-      gallery.innerHTML = "";
+      gallery.innerHTML = ""; // Clear existing gallery items
       const total = imageSources.length;
+
+      // Helper function to wrap around index when reaching bounds
       const getIndex = (i) => (i + total) % total;
 
+      // Select 3 images to show: left, center, right
       const visible = [
         imageSources[getIndex(currentIndex - 1)],
         imageSources[getIndex(currentIndex)],
         imageSources[getIndex(currentIndex + 1)],
       ];
 
+      // Create and append image elements
       visible.forEach((src, i) => {
         const div = document.createElement("div");
         div.className = "gallery-item";
-        if (i === 1) div.classList.add("active");
+        if (i === 1) div.classList.add("active"); // Highlight center image
 
         const img = new Image();
         img.src = src;
         img.alt = `Image`;
 
         div.appendChild(img);
+
+        // When clicked, make the clicked image the new center
         div.addEventListener("click", () => {
           currentIndex = getIndex(currentIndex + i - 1);
           renderGallery();
         });
+
         gallery.appendChild(div);
       });
     }
 
+    // Initial render
     renderGallery();
   </script>
 </body>

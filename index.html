@@ -113,6 +113,16 @@
   <div class="gallery" id="gallery"></div>
 
   <script>
+    // Prevent double-tap to zoom on mobile devices
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', function (event) {
+      const now = new Date().getTime();
+      if (now - lastTouchEnd <= 300) {
+        event.preventDefault();
+      }
+      lastTouchEnd = now;
+    }, false);
+
     const imageSources = [
       "https://github.com/wilsonbanh/domain/blob/main/IMG_1878.PNG?raw=true",
       "https://github.com/wilsonbanh/domain/blob/main/IMG_1917.PNG?raw=true",

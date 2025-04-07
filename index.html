@@ -162,9 +162,12 @@
       const getIndex = (i) => (i + total) % total;
 
       const visible = [
+        imageSources[getIndex(currentIndex - 2)],
         imageSources[getIndex(currentIndex - 1)],
         imageSources[getIndex(currentIndex)],
         imageSources[getIndex(currentIndex + 1)],
+        imageSources[getIndex(currentIndex + 2)],
+        imageSources[getIndex(currentIndex + 3)],
       ];
 
       visible.forEach((src, i) => {
